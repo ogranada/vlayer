@@ -24,11 +24,11 @@ try:
         with open(dest_file, 'w') as repro:
             repro.write("#!/bin/bash\n\n")
             for vf in valid_files:
-                repro.write("gst-launch playbin uri='file://%s';\n"%(vf))
+                repro.write("gst-launch playbin uri='file://%s' fakeval=pid_%s;\n"%(vf, str(os.getpid())))
         os.system("chmod +x "+dest_file)
         os.system("""nohup %s > /dev/null 2> /dev/null &"""%(dest_file))
     else:
-        os.system("""nohup gst-launch playbin uri='file://%s' > /tmp/pid_%s.log 2> /dev/null &"""%(path, str(os.getpid()) ))
+        os.system("""nohup gst-launch playbin uri='file://%s' fakeval=pid_%s > /dev/null 2> /dev/null &"""%(path, str(os.getpid()) ))
     print "playing",path, os.getpid()
 except Exception, e:
     print e
@@ -45,8 +45,8 @@ import vim
 import os
 
 try:
-    os.system("""ps -Af | grep __vlayer__ | grep %s | grep -v grep | awk '{print $2}' | xargs kill"""%( str(os.getpid()) ))
-    os.system("""ps -Af | grep gst-launch | grep pid_%s | grep -v grep | awk '{print $2}' | xargs kill"""%( str(os.getpid()) ))
+    os.system("""ps -Af | grep __vlayer__ | grep %s | grep -v grep | awk '{print $2}' | xargs kill > /dev/null 2> /dev/null """%( str(os.getpid()) ))
+    os.system("""ps -Af | grep gst-launch | grep pid_%s | grep -v grep | awk '{print $2}' | xargs kill > /dev/null 2> /dev/null """%( str(os.getpid()) ))
     print "stopped..."
 except Exception, e:
     print e
@@ -63,7 +63,7 @@ import vim
 import os
 
 try:
-    os.system("""ps -Af | grep gst-launch | grep pid_%s | grep -v grep | awk '{print $2}' | xargs kill"""%( str(os.getpid()) ))
+    os.system("""ps -Af | grep gst-launch | grep pid_%s | grep -v grep | awk '{print $2}' | xargs kill > /dev/null 2> /dev/null """%( str(os.getpid()) ))
     print "skipped..."
 except Exception, e:
     print e
