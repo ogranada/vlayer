@@ -38,8 +38,18 @@ If you playing a folder you can skip the current track
 ```vim
 :Vskip
 ```
+If you want pause the current track 
+```vim
+:Vpause
+:Vp " swap the pause state
+```
+If you want play the current paused track 
+```vim
+:Vunpause
+:Vp " swap the pause state
+```
+
 ## TO DO
-* Make pause action  ```DOING```
 * Make current playing action  ```TO DO```
 
 
