@@ -2,7 +2,6 @@
 
 
 function! vlayer#Play(path)
-    :call vlayer#Stop()
     python << EOF
 
 import vim
@@ -23,6 +22,9 @@ try:
                             ["vlayer", "tools", "shell_player.py"]
                            )
     player = exe_path if os.path.exists(exe_path) else "gst"
+    os.system("""ps -Af | grep __vlayer__ | grep %s | grep -v grep | awk '{print $2}' | xargs kill > /dev/null 2> /dev/null """%( str(os.getpid()) ))
+    os.system("""ps -Af | grep """ + player + """ | grep pid_%s | grep -v grep | awk '{print $2}' | xargs kill > /dev/null 2> /dev/null """%( str(os.getpid()) ))
+    os.system("""ls /tmp/*%s* 2> /dev/null | xargs rm > /dev/null 2> /dev/null """%( str(os.getpid()) ))
     if os.path.isdir(path):
         import string
         import random
