@@ -2,6 +2,7 @@
 
 
 function! vlayer#Play(path)
+    :call vlayer#Stop()
     python << EOF
 
 import vim
@@ -21,7 +22,7 @@ try:
     exe_path = os.sep.join( readme.split(os.sep)[0:-2] +
                             ["vlayer", "tools", "shell_player.py"]
                            )
-    repro = exe_path if os.path.exists(exe_path) else "gst"
+    player = exe_path if os.path.exists(exe_path) else "gst"
     if os.path.isdir(path):
         import string
         import random
@@ -34,17 +35,18 @@ try:
         with open(dest_file, 'w') as repro:
             repro.write("#!/bin/bash\n\n")
             for vf in valid_files:
-                if repro == "gst":
+                if player == "gst":
                     repro.write("gst-launch playbin uri='file://%s' fakeval=pid_%s;\n"%(vf, str(os.getpid())))
                 else:
-                    repro.write("%s '%s' fakeval=pid_%s;\n"%(repro, vf, str(os.getpid())))
+                    repro.write("%s '%s' fakeval=pid_%s;\n"%(player, vf, str(os.getpid())))
         os.system("chmod +x "+dest_file)
         os.system("""nohup %s > /dev/null 2> /dev/null &"""%(dest_file))
     else:
-        if repro == "gst":
-            os.system("""nohup gst-launch playbin uri='%s' fakeval=pid_%s > /dev/null 2> /dev/null &"""%(path, str(os.getpid()) ))
+        if player == "gst":
+            order = """nohup gst-launch playbin uri='%s' fakeval=pid_%s > /dev/null 2> /dev/null &"""%(path, str(os.getpid()))
         else:
-            os.system("""nohup %s '%s' fakeval=pid_%s > /dev/null 2> /dev/null &"""%(repro, path, str(os.getpid()) ))
+            order = """nohup %s '%s' fakeval=pid_%s > /dev/null 2> /dev/null &"""%(player, path, str(os.getpid()))
+        os.system(order)
     print "playing",path
 except Exception as e:
     print e
