@@ -37,6 +37,7 @@ try:
         with open(dest_file, 'w') as repro:
             repro.write("#!/bin/bash\n\n")
             for vf in valid_files:
+                vf = vf.replace("'", """'"'"'""")
                 if player == "gst":
                     repro.write("gst-launch playbin uri='file://%s' fakeval=pid_%s;\n"%(vf, str(os.getpid())))
                 else:
@@ -44,6 +45,7 @@ try:
         os.system("chmod +x "+dest_file)
         os.system("""nohup %s > /dev/null 2> /dev/null &"""%(dest_file))
     else:
+        path = path.replace("'", """'"'"'""")
         if player == "gst":
             order = """nohup gst-launch playbin uri='%s' fakeval=pid_%s > /dev/null 2> /dev/null &"""%(path, str(os.getpid()))
         else:
