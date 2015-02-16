@@ -12,6 +12,8 @@ function! vlayer#ui_glue#setupCommands()
     command! -nargs=0 Vpause   :call vlayer#Pause()
     command! -nargs=0 Vunpause :call vlayer#Unpause()
     command! -nargs=0 Vp       :call vlayer#SwapPause()
+    command! -nargs=0 Va       :call vlayer#Playing()
+    command! -nargs=0 Vactual  :call vlayer#Playing()
 endfunction
 
 

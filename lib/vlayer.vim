@@ -107,7 +107,10 @@ import vim
 import os
 
 try:
-    ## TODO: implement playing now function...
+    os.system("""ps -Af | grep shell_player | grep -v grep | awk '{var = $10" "$11" "$12" "$13" "$14" "$15" "$16" "$17" "$18" "$19" "$20" "$21" "$22; split(var, b, "//"); split(b[2],a,"fakeval="); print a[1]}' > /tmp/lname""")
+    with open("/tmp/lname") as f:
+        data = f.read().replace("\n","").replace("\r","")
+        vim.command("echo 'Playing now: %s'"% data)
 except Exception as e:
     print e
 
