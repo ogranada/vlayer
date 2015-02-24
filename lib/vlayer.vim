@@ -107,10 +107,25 @@ import vim
 import os
 
 try:
-    os.system("""ps -Af | grep shell_player | grep -v grep | awk '{var = $10" "$11" "$12" "$13" "$14" "$15" "$16" "$17" "$18" "$19" "$20" "$21" "$22; split(var, b, "//"); split(b[2],a,"fakeval="); print a[1]}' > /tmp/lname""")
-    with open("/tmp/lname") as f:
-        data = f.read().replace("\n","").replace("\r","")
-        vim.command("echo 'Playing now: %s'"% data)
+    readme = vim.eval("g:vundle_readme")
+    exe_path = os.sep.join( readme.split(os.sep)[0:-2] +
+                            ["vlayer", "tools", "meta_extract.py"]
+                           )
+    player = exe_path if os.path.exists(exe_path) else "gst"
+    if player == "gst":
+        os.system("""ps -Af | grep shell_player | grep -v grep | awk '{var = $10" "$11" "$12" "$13" "$14" "$15" "$16" "$17" "$18" "$19" "$20" "$21" "$22; split(var, b, "//"); split(b[2],a,"fakeval="); print a[1]}' > /tmp/lname""")
+        with open("/tmp/lname") as f:
+            data = f.read().replace("\n","").replace("\r","")
+            print 'Playing now:',data
+    else:
+        os.system(""" ps -Af | grep shell_player | grep -v grep | grep %s > /tmp/lname"""%(str( os.getpid() )))
+        with open("/tmp/lname") as f:
+            filePath = f.read().split("tools/shell_player.py ")[1].split(" fakeval=pid")[0].replace("//","/")
+            filePath = filePath.replace("'", """'"'"'""")
+            os.system(""" %s '%s' > /tmp/lnamef"""%(player, filePath))
+            with open("/tmp/lnamef") as g:
+                data = g.read().replace("\n","").replace("\r","")
+                print 'Playing now:',data
 except Exception as e:
     print e
 
